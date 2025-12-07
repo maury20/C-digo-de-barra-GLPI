@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Leitor Rápido de Tombo para GLPI</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; }
+        input[type="text"] { padding: 10px; font-size: 1.2em; width: 300px; }
+        button { padding: 10px 20px; font-size: 1.1em; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>🔗 Scanner Rápido GLPI - Abrir Chamado por Tombo</h2>
+    <p>Passe o leitor de código de barras no campo abaixo e pressione Enter:</p>
+
+    <input type="text" id="tomboInput" placeholder="Escaneie o Tombo (Patrimônio)">
+    <button onclick="abrirChamado()">Abrir Chamado</button>
+    <p>
+        <small>*O código fará uma busca no GLPI e abrirá uma nova aba no navegador.</small>
+    </p>
+
+    <script>
+        // *** IMPORTANTE: AJUSTE ESTAS VARIÁVEIS ***
+        const URL_BASE_GLPI = "http://seu.glpi.com.br/"; 
+        const ID_MODELO_CHAMADO = 1; // Substitua pelo ID do seu Modelo de Chamado (OS Manutenção)
+
+        document.getElementById('tomboInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                abrirChamado();
+            }
+        });
+
+        function abrirChamado() {
+            const tombo = document.getElementById('tomboInput').value.trim();
+
+            if (tombo) {
+                // A URL monta a requisição:
+                // main.php?ticket$ID_MODELO_CHAMADO: Chama o modelo de chamado
+                // addItem: Adiciona um item (computador)
+                // computer: Tipo de ativo que estamos buscando
+                // tombo: O valor lido pelo scanner (Tombo)
+                const url = `${URL_BASE_GLPI}front/ticket.php?action=add&add=1&tickettemplates_id=${ID_MODELO_CHAMADO}&addItem=computer&computer=${tombo}`;
+
+                // Abre uma nova janela do navegador com o link montado
+                window.open(url, '_blank');
+
+                // Limpa o campo para o próximo Tombo
+                document.getElementById('tomboInput').value = '';
+                document.getElementById('tomboInput').focus();
+            } else {
+                alert("Por favor, escaneie o código de barras primeiro.");
+            }
+        }
+    </script>
+
+</body>
+</html>
